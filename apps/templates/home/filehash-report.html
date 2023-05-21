@@ -1,0 +1,367 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} FileHahs Report {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- [ Main Content ] start -->
+    <section class="pcoded-main-container">
+		<div class="pcoded-content">
+			<!-- [ breadcrumb ] start -->
+			<div class="page-header">
+				<div class="page-block">
+					<div class="row align-items-center">
+						<div class="col-md-12">
+							<div class="page-header-title">
+								<h5 class="m-b-10">Reports</h5>
+							</div>
+							<ul class="breadcrumb">
+								<li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+								<li class="breadcrumb-item"><a href="#!">Investigation</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- [ breadcrumb ] end -->
+			<!-- [ Main Content ] start -->
+			<div class="row">
+				{% if error %}
+                    <div class="col-md-12">
+                        <div class="alert alert-danger" role="alert">
+                            <strong>{{ error.code }} :</strong> {{ error.message }}
+                        </div>
+                    </div>
+                {% endif %}
+				{% if submission %}
+				<!-- [ Invoice ] start -->
+				<div class="container" id="printTable">
+					<div>
+						<div class="card card-border-c-blue">
+							<div class="row invoice-contact m-0">
+								<div class="col-md-8">
+									<div class="invoice-box row">
+										<div class="col-sm-12 border-report">
+											<a href="index.html" class="b-brand">
+												<img class="img-fluid" src="/static/assets/images/logo-dark.png" alt="Gradient able Logo">
+											</a>
+											<p class="w-90 p-l-10 m-t-10">DFIR platform is a powerful tool that can help organizations investigate, and respond to security incidents more quickly and effectively, ultimately reducing the risk of data breaches and other security incidents.</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4 text-center">
+									<h5 class="mb-20">Submission No.</h5>
+									<h5 class="text-uppercase text-primary">
+										<span>#{{properties.id}}</span>
+									</h5>
+								</div>
+							</div>
+							<hr>
+							<div class="card-body">
+								<div class="row invoive-info">
+									<div class="col-xl-4 col-lg-12 task-detail-right">
+										<div class="card trnasiction-card m-0">
+											{% if properties.malicious == 0 %}
+													<div class="card-header bg-c-green rounded-top">
+														<div class="counter text-center">
+															<h4 id="timer" class="text-white m-0">Benign </h4>
+														</div>
+														<div class="card-header-right">
+															<div class="transection-preogress complited">
+																<!-- fa-bug -->
+																<span class="fa fa-check f-20"></span>
+															</div>
+														</div>
+													</div>
+												{% else %}
+													<div class="card-header bg-c-red rounded-top">
+														<div class="counter text-center">
+															<h4 id="timer" class="text-white m-0">Malicious </h4>
+														</div>
+														<div class="card-header-right">
+															<div class="transection-preogress complited">
+																<span class="fa fa-bug f-20"></span>
+															</div>
+														</div>
+													</div>
+												{% endif %}
+											
+										</div>
+										<div class="card trnasiction-card">
+											<div class="card-header">
+												<h5>Task Details</h5>
+											</div>
+											<div class="card-body task-details pb-0">
+												<table class="table">
+													<tbody>
+														<tr>
+															<td><i class="fas fa-adjust m-r-5"></i> Case:</td>
+															<td class="text-right"><span class="float-right"><a class="text-secondary" href="#!"> {{ properties.case_name }}</a></span></td>
+														</tr>
+														<tr>
+															<td><i class="far fa-calendar-alt m-r-5"></i> Submited:</td>
+															<td class="text-right">{{ properties.created_at }}</td>
+														</tr>
+														<tr>
+															<td><i class="far fa-calendar-alt m-r-5"></i> Updated:</td>
+															<td class="text-right">{{submission.last_modification_date if submission.last_modification_date else submission.last_seen}}</td>
+														</tr>
+														<tr>
+															<td><i class="fas fa-chart-line m-r-5"></i> Priority:</td>
+															<td class="text-right">
+																{% if properties.priority == 1 %}
+																	<div class="badge badge-danger">
+																		Critical
+																	</div>
+																{% elif properties.priority == 2 %}
+																	<div class="badge badge-danger">
+																		Hard
+																	</div>
+																{% elif properties.priority == 3 %}
+																	<div class="badge badge-warning">
+																		Medium
+																	</div>
+																{% elif properties.priority == 4 %}
+																	<div class="badge badge-success">
+																		Low
+																	</div>
+																{% endif %}
+															</td>
+														</tr>
+														<tr>
+															<td><i class="fas fa-file m-r-5"></i> File size:</td>
+															<td class="text-right">{{submission.size if submission.size else submission.file_size}}</td>
+														</tr>
+														<tr>
+															<td><i class="fas fa-user-plus m-r-5"></i> Added by:</td>
+															<td class="text-right"><a class="text-secondary" href="#!">{{ current_user.username }}</a></td>
+														</tr>
+														<tr>
+															<td><i class="fas fa-thermometer-half m-r-5"></i> Status:</td>
+															<td class="text-right">Completed</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<div class="border-top transection-footer row">
+												<div class="col-6  border-right"><a href="#!" class="text-dark"><i class="fa fa-plus-circle m-r-10"></i>Report CE</a></div>
+												<div class="col-6"><a href="#!" class="text-dark"><i class="fa fa-eye m-r-10"></i>Transcript</a></div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-8">
+										<h5>Basic properties :</h5>
+										<table class="table table-responsive invoice-table invoice-order table-borderless">
+											<tbody>
+												<tr>
+													<th>MD5 :</th>
+													<td>{{submission.md5 if submission.md5 else submission.md5_hash}}</td>
+												</tr>
+												<tr>
+													<th>SHA-1 :</th>
+													<td>
+														<span class="label label-warning">{{submission.sha1 if submission.sha1 else submission.sha1_hash}}</span>
+													</td>
+												</tr>
+												<tr>
+													<th>SHA-256 :</th>
+													<td>
+														<span class="label label-warning">{{submission.sha256 if submission.sha256 else submission.sha256_hash}}</span>
+													</td>
+												</tr>
+												<tr>
+													<th>File type :</th>
+													<td>
+														<span class="label label-warning"><div class="badge badge-primary">{{submission.type_tag if submission.type_tag else submission.file_type}}</div></span>
+													</td>
+												</tr>
+												{% if submission.magic %}
+													<tr>
+														<th>Magic :</th>
+														<td>
+															<span class="label label-warning">{{submission.magic}}</span>
+														</td>
+													</tr>
+												{% endif %}
+												{% if submission.packers %}
+													{% for packer in submission.packers %}
+														<tr>
+															<th>{{packer}} :</th>
+															<td>
+																<span class="label label-warning"> {{submission.packers[packer]}}</span>
+															</td>
+														</tr>
+													{% endfor %}
+												{% endif %}
+												{% if submission.detectiteasy %}
+													<tr>
+														<th>DetectItEasy :</th>
+														<td>
+															<span class="label label-warning px-1 border-report">{{submission.detectiteasy['filetype']}}</span>  <span class="label label-warning px-1">{{submission.detectiteasy['values'][0]['type']}}: {{submission.detectiteasy['values'][0]['name']}} ({{submission.detectiteasy['values'][0]['version']}})</span>
+														</td>
+													</tr>
+												{% endif %}
+													<tr>
+														<th>Signature :</th>
+														<td>
+															{% if submission.popular_threat_classification %}
+																<strong><span class="label label-warning px-1 text-danger"> {{submission.popular_threat_classification['suggested_threat_label']}}</span></strong>
+															{% else %}
+																<strong><span class="label label-warning px-1 text-danger"> {{submission.signature if submission.signature else 'None'}}</span></strong>
+															{% endif %}
+														</td>
+													</tr>
+												
+												{% if submission.tags %}
+													<tr>
+														<th>Tags :</th>
+														<td>
+															{% for tag in submission.tags %}
+																{% if loop.index <= 4 %}
+																	<span class="label label-warning px-1 border-report"><div class="badge badge-secondary">{{tag}}</div></span>
+																{% endif %}
+															{% endfor %}
+														</td>
+													</tr>
+												{% endif %}
+											</tbody>
+										</table>
+										<div class="card trnasiction-card">
+											<div class="card-header">
+												<h5>Malware Sandboxes</h5>
+											</div>
+											<div class="card-body task-details pb-0">
+												<table class="table">
+													<tbody>
+														{% if submission.sha256%}
+															<tr>
+																{% if properties.malicious == 0 %}
+																	<td><i class="feather icon-cpu m-r-5"></i> VirusTotal 
+																		<div class="badge badge-success ml-2">
+																			Benign
+																		</div>
+																	</td>
+																{% else %}
+																<td><i class="feather icon-cpu m-r-5"></i> VirusTotal 
+																	<div class="badge badge-danger ml-2">
+																		Malicious
+																	</div>
+																</td>
+																{% endif %}
+																
+																<td class="text-right">
+																	<a href="https://www.virustotal.com/gui/file/{{submission.sha256}}" data-toggle="tooltip" data-placement="top" title="Open link" target= _blank>
+																		<i class="feather icon-external-link f-20"></i>
+																	</a>
+																</td>
+															</tr>
+														{% endif %}
+														{% if malbazaar.vendor_intel and not malbazaar.code %}
+															<tr>
+																<td><i class="feather icon-codepen m-r-5"></i> Malware Bazaar 
+																	<div class="badge badge-danger ml-2">
+																		Malicious
+																	</div>
+																</td>
+																<td class="text-right">
+																	<a href="https://bazaar.abuse.ch/sample/{{malbazaar.sha256_hash}}" data-toggle="tooltip" data-placement="top" title="Open link" target= _blank>
+																		<i class="feather icon-external-link f-20"></i>
+																	</a>
+																</td>
+															</tr>
+															{% if malbazaar.vendor_intel['ANY.RUN'] %}
+																<tr>
+																	<td><i class="feather icon-server m-r-5"></i> ANY.RUN 
+																		<div class="badge badge-danger ml-2">
+																			{{malbazaar.vendor_intel['ANY.RUN'][0].verdict}}
+																		</div>
+																	</td>
+																	<td class="text-right">
+																		<a href="{{malbazaar.vendor_intel['ANY.RUN'][0].analysis_url}}" data-toggle="tooltip" data-placement="top" title="Open link" target= _blank>
+																			<i class="feather icon-external-link f-20"></i>
+																		</a>
+																	</td>
+																</tr>
+															{% endif %}
+															{% if malbazaar.vendor_intel.CAPE %}
+																<tr>
+																	<td><i class="feather icon-package m-r-5"></i> CAPE Sandbox 
+																		<div class="badge badge-danger ml-2">
+																			{{malbazaar.vendor_intel.CAPE.detection}}
+																		</div>
+																	</td>
+																	<td class="text-right">
+																		<a href="{{malbazaar.vendor_intel.CAPE.link}}" data-toggle="tooltip" data-placement="top" title="Open link" target= _blank>
+																			<i class="feather icon-external-link f-20"></i>
+																		</a>
+																	</td>
+																</tr>
+															{% endif %}
+														{% endif %}
+													</tbody>
+												</table>
+											</div>
+										</div>
+
+										<table class="table invoice-detail-table">
+											<thead>
+												<tr class="thead-default">
+													<th>File Names</th>
+													<th class="text-right">Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% if submission.names %}
+													{% for name in submission.names %}
+														<tr>
+															<td class="py-2" data-toggle="tooltip" data-placement="top" title="{{name}}">
+																{{name | truncate(70)}}
+															</td>
+															<td class="text-right py-2">
+																<a href="{{ url_for('home_blueprint.download_file',submission_id=properties.id) if malbazaar.sha256_hash else 'javascript:;'}}" data-toggle="tooltip" data-placement="top" title="Downloads">
+																	<i class="fas fa-download {% if malbazaar.sha256_hash %}text-primary{% else %}text-muted disabled{% endif %} f-20"></i>
+																</a>
+															</td>
+														</tr>
+													{% endfor %}
+												{% endif %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-12">
+										<h6>Terms and Condition :</h6>
+										<p>The information contained in the report is confidential and proprietary to the platform owner. 
+											The recipient agrees to maintain the confidentiality of the report and use reasonable efforts to prevent unauthorized access or disclosure of the information. 
+											The recipient further agrees not to reverse engineer, decompile or disassemble any part of the report.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- <div class="row text-center">
+							<div class="col-sm-12 invoice-btn-group text-center">
+								<button type="button" class="btn waves-effect waves-light btn-primary btn-print-invoice m-b-10">Print</button>
+								<button type="button" class="btn waves-effect waves-light btn-secondary m-b-10 ">Cancel</button>
+							</div>
+						</div> -->
+					</div>
+				</div>
+				<!-- [ Invoice ] end -->
+				{% endif %}
+			</div>
+			<!-- [ Main Content ] end -->
+		</div>
+	</section>
+    <!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+{% endblock javascripts %}

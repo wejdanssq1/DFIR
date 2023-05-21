@@ -1,0 +1,383 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} All Submissions {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<!-- data tables css -->
+<link rel="stylesheet" href="/static/assets/css/plugins/dataTables.bootstrap4.min.css">
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- [ Main Content ] start -->
+    <div class="pcoded-main-container">
+        <div class="pcoded-content">
+            <!-- [ breadcrumb ] start -->
+            <div class="page-header">
+                <div class="page-block">
+                    <div class="row align-items-center">
+                        <div class="col-md-12">
+                            <div class="page-header-title">
+                                <h5 class="m-b-10">All Submissions</h5>
+                            </div>
+                            <ul class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="{{ url_for('home_blueprint.submissions') }}">Investigation</a></li>
+                                <li class="breadcrumb-item"><a href="{{ url_for('home_blueprint.submissions') }}">Submissions</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- [ breadcrumb ] end -->
+            <!-- [ Main Content ] start -->
+            <div class="row">
+                {% if msg %}
+                    <div class="col-md-12">
+                        <div class="alert alert-success" role="alert">
+                            {{ msg | safe }}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if error %}
+                    <div class="col-md-12">
+                        <div class="alert alert-danger" role="alert">
+                            <strong>{{ error.code }} :</strong> {{ error.message }}
+                        </div>
+                    </div>
+                {% endif %}
+                <!-- Customer overview start -->
+                <div class="col-md-12">
+                    <div class="card table-card">
+                        <div class="card-header">
+                            <ul class="nav nav-pills nav-fill mt-3 border-bottom pb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true"><i class="feather icon-file-text m-r-5"></i> Files & Hashes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false"><i class="feather icon-link m-r-5"></i> URLs</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false"><i class="feather icon-wifi m-r-5"></i> IPS</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-news-tab" data-bs-toggle="pill" href="#pills-news" role="tab" aria-controls="pills-news" aria-selected="false"><i class="feather icon-monitor m-r-5"></i> PCAP</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body px-4">
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                                    <div class="dt-responsive table-responsive">
+                                        <table id="all-filehash-table" class="table table-hover m-b-0">
+                                            <thead>
+                                                <tr>
+                                                    <th><span>Date</span></th>
+                                                    <th><span>Status <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Case Name <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Submission <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Type <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Scan <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th class="text-center"><span>Actions <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for submission in FileHash %}
+                                                <tr>
+                                                    <td>{{ submission.created_at }}</td>
+                                                    <td>
+                                                        {% if submission.scan_status == "completed" and submission.malicious != 0 %}
+                                                            <div class="badge badge-light-danger">
+                                                                Malicious
+                                                            </div>
+                                                        {% elif submission.scan_status == "queued" %}
+                                                            <div class="badge badge-light-warning">
+                                                                Pending
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="badge badge-light-success">
+                                                                Benign
+                                                            </div>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <a href="{{ url_for('home_blueprint.cases',case_id=submission.case_id) }}">{{ submission.case_name }}</a>
+                                                    </td>
+                                                    <td data-toggle="tooltip" data-placement="top" title="{{submission.file_name}}">
+                                                        {{ submission.file_name | truncate(15) }}
+                                                    </td>
+                                                    <td>
+                                                        <div class="badge badge-primary">
+                                                            {{ submission.type }}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        {% if submission.scan_status == "completed" %}
+                                                            <div class="badge badge-light-success">
+                                                                Completed
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="badge badge-light-warning">
+                                                                Queued
+                                                            </div>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a href="{{ url_for('home_blueprint.filehash_report',submission_id=submission.id) if submission.scan_status == 'completed' else 'javascript:;' }}" data-toggle="tooltip" data-placement="top" title="View Reports">
+                                                            <i class="feather icon-eye {% if submission.scan_status == 'completed' %}text-primary{% else %}text-muted disabled{% endif %} m-r-5 f-20"></i>
+                                                        </a>
+                                                        <a href="{{ url_for('home_blueprint.cases',case_id=submission.id) if submission.scan_status != 'completed' else 'javascript:;' }}" data-toggle="tooltip" data-placement="top" title="Refresh">
+                                                            <i class="feather icon-repeat {% if submission.scan_status == 'completed' %}text-muted disabled{% else %}text-success{% endif %} m-r-5 f-20"></i>
+                                                        </a>
+                                                        <a href="{{ url_for('home_blueprint.delete_submission',type_id='filehash',submission_id=submission.id) }}" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                            <i class="feather icon-trash-2 text-danger m-r-5 f-20"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                                    <div class="dt-responsive table-responsive">
+                                        <table id="all-url-table" class="table table-hover m-b-0">
+                                            <thead>
+                                                <tr>
+                                                    <th><span>Date</span></th>
+                                                    <th><span>Status <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Case Name <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Submission <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Type <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Scan <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th class="text-center"><span>Actions <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for submission in urls %}
+                                                <tr>
+                                                    <td>{{ submission.created_at }}</td>
+                                                    <td>
+                                                        {% if submission.scan_status == "completed" and submission.malicious != 0 %}
+                                                            <div class="badge badge-light-danger">
+                                                                Malicious
+                                                            </div>
+                                                        {% elif submission.scan_status == "queued" %}
+                                                            <div class="badge badge-light-warning">
+                                                                Pending
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="badge badge-light-success">
+                                                                Benign
+                                                            </div>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <a href="{{ url_for('home_blueprint.cases',case_id=submission.case_id) }}">{{ submission.case_name }}</a>
+                                                    </td>
+                                                    <td data-toggle="tooltip" data-placement="top" title="{{submission.url}}">
+                                                        {{ submission.url | truncate(15) }}
+                                                    </td>
+                                                    <td>
+                                                        <div class="badge badge-primary">
+                                                            {{ submission.data_type }}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        {% if submission.scan_status == "completed" %}
+                                                            <div class="badge badge-light-success">
+                                                                Completed
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="badge badge-light-warning">
+                                                                Queued
+                                                            </div>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a href="{{ url_for('home_blueprint.urlip_report',submission_id=submission.id) if submission.scan_status == 'completed' else 'javascript:;' }}" data-toggle="tooltip" data-placement="top" title="View Reports">
+                                                            <i class="feather icon-eye {% if submission.scan_status == 'completed' %}text-primary{% else %}text-muted disabled{% endif %} m-r-5 f-20"></i>
+                                                        </a>
+                                                        <a href="{{ url_for('home_blueprint.cases',case_id=submission.id) if submission.scan_status != 'completed' else 'javascript:;' }}" data-toggle="tooltip" data-placement="top" title="Refresh">
+                                                            <i class="feather icon-repeat {% if submission.scan_status == 'completed' %}text-muted disabled{% else %}text-success{% endif %} m-r-5 f-20"></i>
+                                                        </a>
+                                                        <a href="{{ url_for('home_blueprint.delete_submission',type_id='urlip',submission_id=submission.id) }}" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                            <i class="feather icon-trash-2 text-danger m-r-5 f-20"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                                    <div class="dt-responsive table-responsive">
+                                        <table id="all-ip-table" class="table table-hover m-b-0">
+                                            <thead>
+                                                <tr>
+                                                    <th><span>Date</span></th>
+                                                    <th><span>Status <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Case Name <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Submission <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Type <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Scan <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th class="text-center"><span>Actions <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for submission in ips %}
+                                                <tr>
+                                                    <td>{{ submission.created_at }}</td>
+                                                    <td>
+                                                        {% if submission.scan_status == "completed" and submission.malicious != 0 %}
+                                                            <div class="badge badge-light-danger">
+                                                                Malicious
+                                                            </div>
+                                                        {% elif submission.scan_status == "queued" %}
+                                                            <div class="badge badge-light-warning">
+                                                                Pending
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="badge badge-light-success">
+                                                                Benign
+                                                            </div>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <a href="{{ url_for('home_blueprint.cases',case_id=submission.case_id) }}">{{ submission.case_name }}</a>
+                                                    </td>
+                                                    <td data-toggle="tooltip" data-placement="top" title="{{submission.ip}}">
+                                                        {{ submission.ip | truncate(15) }}
+                                                    </td>
+                                                    <td>
+                                                        <div class="badge badge-primary">
+                                                            {{ submission.data_type }}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        {% if submission.scan_status == "completed" %}
+                                                            <div class="badge badge-light-success">
+                                                                Completed
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="badge badge-light-warning">
+                                                                Queued
+                                                            </div>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a href="{{ url_for('home_blueprint.urlip_report',submission_id=submission.id) if submission.scan_status == 'completed' else 'javascript:;' }}" data-toggle="tooltip" data-placement="top" title="View Reports">
+                                                            <i class="feather icon-eye {% if submission.scan_status == 'completed' %}text-primary{% else %}text-muted disabled{% endif %} m-r-5 f-20"></i>
+                                                        </a>
+                                                        <a href="{{ url_for('home_blueprint.cases',case_id=submission.id) if submission.scan_status != 'completed' else 'javascript:;' }}" data-toggle="tooltip" data-placement="top" title="Refresh">
+                                                            <i class="feather icon-repeat {% if submission.scan_status == 'completed' %}text-muted disabled{% else %}text-success{% endif %} m-r-5 f-20"></i>
+                                                        </a>
+                                                        <a href="{{ url_for('home_blueprint.delete_submission',type_id='urlip',submission_id=submission.id) }}" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                            <i class="feather icon-trash-2 text-danger m-r-5 f-20"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-news" role="tabpanel" aria-labelledby="pills-news-tab">
+                                    <div class="dt-responsive table-responsive">
+                                        <table id="all-ip-table" class="table table-hover m-b-0">
+                                            <thead>
+                                                <tr>
+                                                    <th><span>Date</span></th>
+                                                    <th><span>Indicators <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Case Name <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Submission <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Type <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th><span>Scan <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                    <th class="text-center"><span>Actions <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for submission in packets %}
+                                                    <tr>
+                                                        <td>{{ submission.created_at }}</td>
+                                                        <td>
+                                                            <div class="badge badge-light-danger">
+                                                                <i class="fa fa-bug m-r-3"></i>
+                                                                {{submission.malicious}} malicious
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <a href="{{ url_for('home_blueprint.cases',case_id=submission.case_id) }}">{{ submission.case_name }}</a>
+                                                        </td>
+                                                        <td data-toggle="tooltip" data-placement="top" title="{{submission.file_name}}">
+                                                            {{ submission.file_name | truncate(15) }}
+                                                        </td>
+                                                        <td>
+                                                            <div class="badge badge-primary">
+                                                                {{ submission.data_type }}
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            {% if submission.scan_status == "completed" %}
+                                                                <div class="badge badge-light-success">
+                                                                    Completed
+                                                                </div>
+                                                            {% else %}
+                                                                <div class="badge badge-light-warning">
+                                                                    Queued
+                                                                </div>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <a href="{{ url_for('home_blueprint.pcap_report',submission_id=submission.id) if submission.scan_status == 'completed' else 'javascript:;' }}" data-toggle="tooltip" data-placement="top" title="View Reports">
+                                                                <i class="feather icon-eye {% if submission.scan_status == 'completed' %}text-primary{% else %}text-muted disabled{% endif %} m-r-5 f-20"></i>
+                                                            </a>
+                                                            <a href="{{ url_for('home_blueprint.cases',case_id=submission.id) if submission.scan_status != 'completed' else 'javascript:;' }}" data-toggle="tooltip" data-placement="top" title="Refresh">
+                                                                <i class="feather icon-repeat {% if submission.scan_status == 'completed' %}text-muted disabled{% else %}text-success{% endif %} m-r-5 f-20"></i>
+                                                            </a>
+                                                            <a href="{{ url_for('home_blueprint.delete_submission',type_id='pcap',submission_id=submission.id) }}" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                                <i class="feather icon-trash-2 text-danger m-r-5 f-20"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Customer overview end -->
+            </div>
+            <!-- [ Main Content ] end -->
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+	<!-- datatable Js -->
+	<script src="/static/assets/js/plugins/jquery.dataTables.min.js"></script>
+	<script src="/static/assets/js/plugins/dataTables.bootstrap4.min.js"></script>
+
+    <script>
+		$('#all-filehash-table').DataTable({
+            order: [[0, 'desc']],
+        });
+        $('#all-url-table').DataTable({
+            order: [[0, 'desc']],
+        });
+        $('#all-ip-table').DataTable({
+            order: [[0, 'desc']],
+        });
+        $('#all-pcap-table').DataTable({
+            order: [[0, 'desc']],
+        });
+	</script>
+{% endblock javascripts %}

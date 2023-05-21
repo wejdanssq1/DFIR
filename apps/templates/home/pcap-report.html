@@ -1,0 +1,274 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} URL & IP Report {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- [ Main Content ] start -->
+    <section class="pcoded-main-container">
+		<div class="pcoded-content">
+			<!-- [ breadcrumb ] start -->
+			<div class="page-header">
+				<div class="page-block">
+					<div class="row align-items-center">
+						<div class="col-md-12">
+							<div class="page-header-title">
+								<h5 class="m-b-10">Reports</h5>
+							</div>
+							<ul class="breadcrumb">
+								<li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+								<li class="breadcrumb-item"><a href="#!">Investigation</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- [ breadcrumb ] end -->
+			<!-- [ Main Content ] start -->
+			<div class="row">
+				{% if error %}
+                    <div class="col-md-12">
+                        <div class="alert alert-danger" role="alert">
+                            <strong>{{ error.code }} :</strong> {{ error.message }}
+                        </div>
+                    </div>
+                {% endif %}
+				{% if result %}
+				<!-- [ Invoice ] start -->
+				<div class="container" id="printTable">
+					<div>
+						<div class="card card-border-c-blue">
+							<div class="row invoice-contact m-0">
+								<div class="col-md-8">
+									<div class="invoice-box row">
+										<div class="col-sm-12 border-report">
+											<a href="index.html" class="b-brand">
+												<img class="img-fluid" src="/static/assets/images/logo-dark.png" alt="Gradient able Logo">
+											</a>
+											<p class="w-90 p-l-10 m-t-10">DFIR platform is a powerful tool that can help organizations investigate, and respond to security incidents more quickly and effectively, ultimately reducing the risk of data breaches and other security incidents.</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4 text-center">
+									<h5 class="mb-20">Submission No.</h5>
+									<h5 class="text-uppercase text-primary">
+										<span>#{{properties.id}}</span>
+									</h5>
+								</div>
+							</div>
+							<hr>
+							<div class="card-body">
+								<div class="row invoive-info">
+									<div class="col-xl-4 col-lg-12 task-detail-right">
+										<div class="card trnasiction-card m-0">
+											{% if properties.malicious == 0 %}
+													<div class="card-header bg-c-green rounded-top">
+														<div class="counter text-center">
+															<h4 id="timer" class="text-white m-0">Benign </h4>
+														</div>
+														<div class="card-header-right">
+															<div class="transection-preogress complited">
+																<!-- fa-bug -->
+																<span class="fa fa-check f-20"></span>
+															</div>
+														</div>
+													</div>
+												{% else %}
+													<div class="card-header bg-c-red rounded-top">
+														<div class="counter text-center">
+															<h4 id="timer" class="text-white m-0">Malicious </h4>
+														</div>
+														<div class="card-header-right">
+															<div class="transection-preogress complited">
+																<span class="fa fa-bug f-20"></span>
+															</div>
+														</div>
+													</div>
+												{% endif %}
+											
+										</div>
+										<div class="card trnasiction-card">
+											<div class="card-header">
+												<h5>Task Details</h5>
+											</div>
+											<div class="card-body task-details pb-0">
+												<table class="table">
+													<tbody>
+														<tr>
+															<td><i class="fas fa-adjust m-r-5"></i> Case:</td>
+															<td class="text-right"><span class="float-right"><a class="text-secondary" href="#!"> {{ properties.case_name }}</a></span></td>
+														</tr>
+														<tr>
+															<td><i class="far fa-calendar-alt m-r-5"></i> Submited:</td>
+															<td class="text-right">{{ properties.created_at }}</td>
+														</tr>
+														<tr>
+															<td><i class="fas fa-chart-line m-r-5"></i> Priority:</td>
+															<td class="text-right">
+																{% if properties.priority == 1 %}
+																	<div class="badge badge-danger">
+																		Critical
+																	</div>
+																{% elif properties.priority == 2 %}
+																	<div class="badge badge-danger">
+																		Hard
+																	</div>
+																{% elif properties.priority == 3 %}
+																	<div class="badge badge-warning">
+																		Medium
+																	</div>
+																{% elif properties.priority == 4 %}
+																	<div class="badge badge-success">
+																		Low
+																	</div>
+																{% endif %}
+															</td>
+														</tr>
+														<tr>
+															<td><i class="fas fa-user-secret m-r-3"></i> Indicators:</td>
+															<td class="text-right">
+																<div class="badge badge-danger ml-2">
+																	<i class="fa fa-bug m-r-3"></i>
+																	{{properties.malicious}}
+																</div>
+															</td>
+														</tr>
+														<tr>
+															<td><i class="fas fa-user-plus m-r-5"></i> Added by:</td>
+															<td class="text-right"><a class="text-secondary" href="#!">{{ current_user.username }}</a></td>
+														</tr>
+														<tr>
+															<td><i class="fas fa-thermometer-half m-r-5"></i> Status:</td>
+															<td class="text-right">Completed</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<div class="border-top transection-footer row">
+												<div class="col-6  border-right"><a href="#!" class="text-dark"><i class="fa fa-plus-circle m-r-10"></i>Report CE</a></div>
+												<div class="col-6"><a href="#!" class="text-dark"><i class="fa fa-eye m-r-10"></i>Transcript</a></div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-8">
+										<h5>Basic properties :</h5>
+										<table class="table table-responsive invoice-table invoice-order table-borderless">
+											<tbody>
+												<tr>
+													<th class="text-uppercase">Name :</th>
+													<td data-toggle="tooltip" data-placement="top" title="{{properties.file_name}}"> {{(properties.file_name | truncate(80))}}</td>
+												</tr>
+												<tr>
+													<th>Detection :</th>
+													<td>
+														<strong><span class="label label-warning px-1 text-danger"> {{properties.malicious}} Network Indicators were marked as malicious</span></strong>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<div class="card trnasiction-card">
+											<div class="card-header">
+												<h5>Malicious indicators</h5>
+											</div>
+											<div class="card-body task-details pb-0">
+												<table id="all-av-table" class="table">
+													<tbody>
+														{% for submission in result%}
+															<tr>
+																<td data-toggle="tooltip" data-placement="top" title="{{submission.url if submission.url else submission.ip }}">
+																	<i class="feather icon-cpu m-r-4 text-danger"></i>
+																	{{(submission.url | truncate(70)) if submission.url else submission.ip }}
+																</td>
+																<td class="text-right">
+																	<a href="{{ url_for('home_blueprint.urlip_report',submission_id=submission.id) if submission.scan_status == 'completed' else 'javascript:;' }}" data-toggle="tooltip" data-placement="top" title="View Reports">
+																		<i class="feather icon-eye {% if submission.scan_status == 'completed' %}text-primary{% else %}text-muted disabled{% endif %} m-r-5 f-20"></i>
+																	</a>
+																	<a href="{{ url_for('home_blueprint.cases',case_id=submission.id) if submission.scan_status != 'completed' else 'javascript:;' }}" data-toggle="tooltip" data-placement="top" title="Refresh">
+																		<i class="feather icon-repeat {% if submission.scan_status == 'completed' %}text-muted disabled{% else %}text-success{% endif %} m-r-5 f-20"></i>
+																	</a>
+																	<a href="{{ url_for('home_blueprint.delete_submission',type_id='urlip',submission_id=submission.id) }}" data-toggle="tooltip" data-placement="top" title="Delete">
+																		<i class="feather icon-trash-2 text-danger m-r-5 f-20"></i>
+																	</a>
+																</td>
+															</tr>
+														{% endfor %}
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-12">
+										<h6>Terms and Condition :</h6>
+										<p>The information contained in the report is confidential and proprietary to the platform owner. 
+											The recipient agrees to maintain the confidentiality of the report and use reasonable efforts to prevent unauthorized access or disclosure of the information. 
+											The recipient further agrees not to reverse engineer, decompile or disassemble any part of the report.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- <div class="row text-center">
+							<div class="col-sm-12 invoice-btn-group text-center">
+								<button type="button" class="btn waves-effect waves-light btn-primary btn-print-invoice m-b-10">Print</button>
+								<button type="button" class="btn waves-effect waves-light btn-secondary m-b-10 ">Cancel</button>
+							</div>
+						</div> -->
+					</div>
+				</div>
+				<!-- [ Invoice ] end -->
+				{% endif %}
+			</div>
+			<!-- [ Main Content ] end -->
+		</div>
+	</section>
+    <!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<!-- datatable Js -->
+
+<script>
+	function sortTable() {
+	  var table, rows, switching, i, x, y, shouldSwitch;
+	  table = document.getElementById("all-av-table");
+	  switching = true;
+	  /*Make a loop that will continue until
+	  no switching has been done:*/
+	  while (switching) {
+		//start by saying: no switching is done:
+		switching = false;
+		rows = table.rows;
+		/*Loop through all table rows (except the
+		first, which contains table headers):*/
+		for (i = 0; i < (rows.length - 1); i++) {
+		  //start by saying there should be no switching:
+		  shouldSwitch = false;
+		  /*Get the two elements you want to compare,
+		  one from current row and one from the next:*/
+		  x = rows[i].getElementsByTagName("TD")[1];
+		  y = rows[i + 1].getElementsByTagName("TD")[1];
+		  //check if the two rows should switch place:
+		  if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+			//if so, mark as a switch and break the loop:
+			shouldSwitch = true;
+			break;
+		  }
+		}
+		if (shouldSwitch) {
+		  /*If a switch has been marked, make the switch
+		  and mark that a switch has been done:*/
+		  rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+		  switching = true;
+		}
+	  }
+	}
+	sortTable();
+</script>
+{% endblock javascripts %}

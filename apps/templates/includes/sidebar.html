@@ -1,0 +1,60 @@
+
+	<!-- [ navigation menu ] start -->
+	<nav class="pcoded-navbar menupos-fixed menu-light ">
+		<div
+			class="navbar-wrapper  ">
+			<div class="navbar-content scroll-div "
+				>
+				<ul class="nav pcoded-inner-navbar ">
+					<li class="nav-item">
+						<a href="/" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span
+								class="pcoded-mtext">Dashboard</span></a>
+					</li>
+					<li class="nav-item pcoded-menu-caption">
+						<label>Investigation</label>
+					</li>
+					<li class="nav-item">
+						<a href="{{ url_for('home_blueprint.newcase') }}" class="nav-link "><span class="pcoded-micon"><i
+									class="feather icon-plus-circle"></i></span><span class="pcoded-mtext">New Case</span></a>
+					</li>
+					<li class="nav-item">
+						<a href="{{ url_for('home_blueprint.allcases') }}" class="nav-link "><span class="pcoded-micon"><i
+									class="feather icon-grid"></i></span><span class="pcoded-mtext">All Cases</span></a>
+					</li>
+					<li class="nav-item">
+						<a href="{{ url_for('home_blueprint.submissions') }}" class="nav-link "><span class="pcoded-micon"><i
+									class="feather icon-slack"></i></span><span class="pcoded-mtext">All Submissions</span></a>
+					</li>
+					<li class="nav-item pcoded-menu-caption">
+						<label>Reporting</label>
+					</li>
+					<li class="nav-item">
+						<a href="javascript:;" class="nav-link "><span class="pcoded-micon"><i
+									class="feather icon-book"></i></span><span class="pcoded-mtext">Reports</span></a>
+					</li>
+					<li class="nav-item pcoded-menu-caption">
+						<label>User actions</label>
+					</li>
+					<li class="nav-item">
+						<a href="{{ url_for('home_blueprint.settings') }}" class="nav-link "><span class="pcoded-micon"><i
+									class="feather icon-settings"></i></span><span class="pcoded-mtext">Settings</span></a>
+					</li>
+					<li class="nav-item">
+						<a href="{{ url_for('authentication_blueprint.logout') }}" class="nav-link "><span class="pcoded-micon"><i class="feather icon-power"></i></span><span
+								class="pcoded-mtext">Logout</span></a>
+					</li>
+				
+				<div class="card text-center">
+					<div class="card-body px-3">
+						<i class="feather icon-github f-40"></i>
+						<h6 class="mt-3">Github link</h6>
+						<a href="https://github.com/wejdanssq1/DFIR" target="_blank"
+							class="btn btn-primary btn-sm text-white m-0">Join now</a>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</nav>
+	<!-- [ navigation menu ] end -->
+    

@@ -1,0 +1,231 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- [ Main Content ] start -->
+    <div class="pcoded-main-container">
+        <div class="pcoded-content">
+            <!-- [ breadcrumb ] start -->
+			<div class="page-header">
+				<div class="page-block">
+					<div class="row align-items-center">
+						<div class="col-md-12">
+							<div class="page-header-title">
+								<h5 class="m-b-10">{{case.case_name}}</h5>
+							</div>
+							<ul class="breadcrumb">
+								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+								<li class="breadcrumb-item"><a href="{{url_for('home_blueprint.cases',case_id=case.id)}}">Investigation</a></li>
+								<li class="breadcrumb-item"><a href="{{url_for('home_blueprint.cases',case_id=case.id)}}">{{case.case_name}}</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- [ breadcrumb ] end -->
+            <!-- [ Main Content ] start -->
+            <div class="row">
+				{% if result %}
+					<div class="col-lg-12">
+						<div class="alert alert-success" role="alert">
+							{{ result | safe }}
+						</div>
+					</div>
+				{% endif %}
+                <!-- order-card start -->
+                <div class="col-md-6 col-xl-3">
+                    <div class="card bg-c-blue notification-card">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4 notify-icon"><i class="feather icon-file-text"></i></div>
+                                <div class="col-8 notify-cont">
+                                    <h4>{{case.counter.file}}</h4>
+                                    <p>Total Files</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card bg-c-green notification-card">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4 notify-icon"><i class="feather icon-cpu"></i></div>
+                                <div class="col-8 notify-cont">
+                                    <h4>{{case.counter.hash}}</h4>
+                                    <p>Total Hashes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card bg-c-yellow notification-card">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4 notify-icon"><i class="feather icon-wifi"></i></div>
+                                <div class="col-8 notify-cont">
+                                    <h4>{{case.counter.url}}</h4>
+                                    <p>Total URLs</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card bg-c-red notification-card">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-4 notify-icon"><i class="feather icon-monitor"></i></div>
+                                <div class="col-8 notify-cont">
+                                    <h4>{{case.counter.ip}}</h4>
+                                    <p>Total IPs</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- order-card end -->
+				{% if error %}
+                    <div class="col-md-12">
+                        <div class="alert alert-danger" role="alert">
+                            <strong>{{ error.code }} :</strong> {{ error.message }}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="col-md-9">
+					<div class="card px-10">
+						<div class="card-body">
+							<ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+								<li class="nav-item">
+									<a class="nav-link text-uppercase active px-5" id="files-tab" data-bs-toggle="tab" href="#files" role="tab" aria-controls="home" aria-selected="true"><i class="feather icon-file-text m-r-5"></i> File</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link text-uppercase px-5" id="hashes-tab" data-bs-toggle="tab" href="#hashes" role="tab" aria-controls="profile" aria-selected="false"><i class="feather icon-cpu m-r-5"></i> Hash</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link text-uppercase px-5" id="url-tab" data-bs-toggle="tab" href="#urlip" role="tab" aria-controls="contact" aria-selected="false"><i class="feather icon-wifi m-r-5"></i> URL & IP</a>
+								</li>
+                                <li class="nav-item">
+									<a class="nav-link text-uppercase px-5" id="pcap-tab" data-bs-toggle="tab" href="#pcap" role="tab" aria-controls="contact" aria-selected="false"><i class="feather icon-monitor m-r-5"></i> PCAP</a>
+								</li>
+							</ul>
+							<div class="tab-content" id="myTabContent">
+								<div class="tab-pane fade active show" id="files" role="tabpanel" aria-labelledby="files-tab">
+									<form id="file-upload" action="" method="POST" enctype="multipart/form-data">
+										<div class="text-center mt-3 justify-content-center py-4">
+											<i class="feather icon-file-text display-3 text-primary"></i>
+											<h5 class="mt-3">One more click! . .</h5>
+											<div class="file btn waves-effect waves-light btn-outline-primary file-btn mt-1">
+												<i class="feather icon-paperclip mr-1"></i> Choose file 
+												{{ form.file(class="form-control") }}
+											</div>
+											<button class="btn btn-primary mt-1" id="submit" name="submit_file" type="submit">Scan Now</button>
+											<p class="mt-3">Analyse suspicious files to detect malware and other breaches.</p>
+										</div>
+									</form>
+								</div>
+								<div class="tab-pane fade" id="hashes" role="tabpanel" aria-labelledby="hashes-tab">
+									<form id="hash-search" action="" method="POST">
+										<div class="text-center mt-3 justify-content-center py-4">
+											<i class="feather icon-cpu display-3 text-success"></i>
+											<h5 class="mt-3">One more click! . .</h5>
+											<div class="input-group w-50 mx-auto mt-1">
+												{{ form.hash(class="form-control", placeholder="Search for a hash") }}
+												<div class="input-group-append"><button class="btn btn-success" id="submit" name="submit_hash" type="submit">Search</button>
+												</div>
+											</div>
+											<p class="mt-3">Search for a hash, gain additional context and threat landscape visibility.</p>
+										</div>
+									</form>
+								</div>
+								<div class="tab-pane fade" id="urlip" role="tabpanel" aria-labelledby="url-tab">
+									<form id="url-search" action="" method="POST">
+										<div class="text-center mt-3 justify-content-center py-4">
+											<i class="feather icon-wifi display-3 text-warning"></i>
+											<h5 class="mt-3">One more click! . .</h5>
+											<div class="input-group w-50 mx-auto mt-1">
+												{{ form.url(class="form-control", placeholder="Scan a URL, IP") }}
+												<div class="input-group-append"><button class="btn btn-warning" id="submit" name="submit_url" type="submit">Search</button>
+												</div>
+											</div>
+											<p class="mt-3">Scan a URL, IP, gain additional context and threat landscape visibility.</p>
+										</div>
+									</form>
+								</div>
+                                <div class="tab-pane fade" id="pcap" role="tabpanel" aria-labelledby="pcap-tab">
+									<form id="pcap-upload" action="" method="POST" enctype="multipart/form-data">
+										<div class="text-center mt-3 justify-content-center py-4">
+											<i class="feather icon-monitor display-3 text-danger"></i>
+											<h5 class="mt-3">One more click! . .</h5>
+											<div class="file btn waves-effect waves-light btn-outline-danger file-btn mt-1">
+												<i class="feather icon-paperclip mr-1"></i> Choose PCAP file 
+												{{ form.pcap(class="form-control") }}
+											</div>
+											<button class="btn btn-danger mt-1" id="submit" name="submit_pcap" type="submit">Scan Now</button>
+											<p class="mt-3">Analyse suspicious PCAPs to detect malware and other breaches.</p>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+                <div class="col-xl-3 col-md-6 mb-4">
+					<h5>Anti-Malware Engines</h5>
+					<hr>
+					<div class="form-group">
+						<div class="switch switch-primary d-inline m-r-10">
+							<input type="checkbox" id="switch-p-1" checked="">
+							<label for="switch-p-1" class="cr"></label>
+						</div>
+						<label>VirusTotal</label>
+					</div>
+					<div class="form-group">
+						<div class="switch switch-primary d-inline m-r-10">
+							<input type="checkbox" id="switch-p-2">
+							<label for="switch-p-2" class="cr"></label>
+						</div>
+						<label>AnyRun</label>
+					</div>
+					<div class="form-group">
+						<div class="switch switch-primary d-inline m-r-10">
+							<input type="checkbox" id="switch-p-3">
+							<label for="switch-p-3" class="cr"></label>
+						</div>
+						<label>Hybrid Analysis</label>
+					</div>
+					<div class="form-group">
+						<div class="switch switch-primary d-inline m-r-10">
+							<input type="checkbox" id="switch-p-4">
+							<label for="switch-p-4" class="cr"></label>
+						</div>
+						<label>AlienVault OTX</label>
+					</div>
+					<div class="form-group">
+						<div class="switch switch-primary d-inline m-r-10">
+							<input type="checkbox" id="switch-p-5">
+							<label for="switch-p-5" class="cr"></label>
+						</div>
+						<label>URLHaus & URLScan</label>
+					</div>
+				</div>
+            </div>
+            <!-- [ Main Content ] end -->
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<!-- sweet alert Js -->
+<script src="/static/assets/js/plugins/sweetalert.min.js"></script>
+<script src="/static/assets/js/pages/ac-alert.js"></script>
+{% endblock javascripts %}

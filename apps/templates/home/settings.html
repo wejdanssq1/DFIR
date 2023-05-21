@@ -1,0 +1,82 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} DFIR Settings {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- [ Main Content ] start -->
+    <div class="pcoded-main-container">
+        <div class="pcoded-content">
+            <!-- [ breadcrumb ] start -->
+            <div class="page-header">
+                <div class="page-block">
+                    <div class="row align-items-center">
+                        <div class="col-md-12">
+                            <div class="page-header-title">
+                                <h5 class="m-b-10">Settings</h5>
+                            </div>
+                            <ul class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="#">DFIR</a></li>
+                                <li class="breadcrumb-item"><a href="#">Settings</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- [ breadcrumb ] end -->
+            <div class="row justify-content-center">
+                    {% if msg %}
+						<div class="col-lg-9">
+							<div class="alert alert-success" role="alert">
+								{{ msg | safe }}
+							</div>
+						</div>
+					{% endif %}
+                <div class="col-lg-9">
+                    <div class="card shadow-none">
+                        <div class="card-body shadow border-0">
+                            <form role="form" method="post" action="">
+                                <div class="form-group">
+                                    <label for="VTAPI">VirusTotal API</label>
+                                    {{ form.VTAPI(placeholder="API Key", value=API.VTAPI, class="form-control") }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="ARAPI">AnyRun API</label>
+                                    {{ form.ARAPI(placeholder="API Key", value=API.ARAPI, class="form-control") }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="HBAPI">Hybrid Analysis API</label>
+                                    {{ form.HBAPI(placeholder="API Key", value=API.HBAPI, class="form-control") }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="MBAPI">Malware Bazaar API</label>
+                                    {{ form.MBAPI(placeholder="API Key", value=API.MBAPI, class="form-control") }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="OTXAPI">AlienVault OTX API</label>
+                                    {{ form.OTXAPI(placeholder="API Key", value=API.OTXAPI, class="form-control") }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="URLAPI">URLHaus API</label>
+                                    {{ form.URLAPI(placeholder="API Key", value=API.URLAPI, class="form-control") }}
+                                </div>
+                                {{ form.submit(class="btn waves-effect btn-block waves-light btn-primary") }}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+{% endblock javascripts %}

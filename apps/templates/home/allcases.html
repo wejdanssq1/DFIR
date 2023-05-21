@@ -1,0 +1,128 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Total Cases {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<!-- data tables css -->
+<link rel="stylesheet" href="/static/assets/css/plugins/dataTables.bootstrap4.min.css">
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- [ Main Content ] start -->
+    <div class="pcoded-main-container">
+        <div class="pcoded-content">
+            <!-- [ breadcrumb ] start -->
+            <div class="page-header">
+                <div class="page-block">
+                    <div class="row align-items-center">
+                        <div class="col-md-12">
+                            <div class="page-header-title">
+                                <h5 class="m-b-10">Total Cases</h5>
+                            </div>
+                            <ul class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="{{ url_for('home_blueprint.allcases') }}">Investigation</a></li>
+                                <li class="breadcrumb-item"><a href="{{ url_for('home_blueprint.allcases') }}">Total Cases</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- [ breadcrumb ] end -->
+            <!-- [ Main Content ] start -->
+            <div class="row">
+                {% if msg %}
+                    <div class="col-md-12">
+                        <div class="alert alert-success" role="alert">
+                            {{ msg | safe }}
+                        </div>
+                    </div>
+                {% endif %}
+                <!-- Customer overview start -->
+                <div class="col-md-12">
+                    <div class="card table-card">
+                        <div class="card-body p-4"> <!-- pb-5 -->
+                            <div class="dt-responsive table-responsive">
+                                <table id="all-cases-table" class="table table-hover m-b-0">
+                                    <thead>
+                                        <tr>
+                                            <th><span>Date</span></th>
+                                            <th><span>Case Name <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                            <th><span>Created By <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                            <th><span>assigned To <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                            <th><span>Priority <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                            <th class="text-center"><span>Actions <a class="help" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"><i class="feather icon-help-circle f-16"></i></a></span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for case in cases %}
+                                        <tr>
+                                            <td>{{ case.created_at }}</td>
+                                            <td>
+                                                <a href="{{ url_for('home_blueprint.cases',case_id=case.id) }}">{{ case.case_name }}</a>
+                                            </td>
+                                            <td>
+                                                {{ current_user.username }}
+                                            </td>
+                                            <td>
+                                                {{ case.assigned_to }}
+                                            </td>
+                                            <td>
+                                                {% if case.case_priority == 1 %}
+                                                    <div class="badge badge-light-danger">
+                                                        Critical
+                                                    </div>
+                                                {% elif case.case_priority == 2 %}
+                                                    <div class="badge badge-light-danger">
+                                                        Hard
+                                                    </div>
+                                                {% elif case.case_priority == 3 %}
+                                                    <div class="badge badge-light-warning">
+                                                        Medium
+                                                    </div>
+                                                {% elif case.case_priority == 4 %}
+                                                    <div class="badge badge-light-success">
+                                                        Low
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                <i class="feather icon-eye text-primary m-r-5 f-20"></i>
+                                                <a href="{{ url_for('home_blueprint.cases',case_id=case.id) }}" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                    <i class="feather icon-edit-2 text-success m-r-5 f-20"></i>
+                                                </a>
+                                                <a href="{{ url_for('home_blueprint.delete_case',case_id=case.id) }}" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                    <i class="feather icon-trash-2 text-danger m-r-5 f-20"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Customer overview end -->
+            </div>
+            <!-- [ Main Content ] end -->
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+	<!-- datatable Js -->
+	<script src="/static/assets/js/plugins/jquery.dataTables.min.js"></script>
+	<script src="/static/assets/js/plugins/dataTables.bootstrap4.min.js"></script>
+
+    <script>
+		$('#all-cases-table').DataTable({
+            order: [[0, 'desc']],
+        });
+	</script>
+{% endblock javascripts %}

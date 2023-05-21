@@ -1,0 +1,248 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} New Case {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+	<!-- [ Main Content ] start -->
+	<div class="pcoded-main-container">
+		<div class="pcoded-content">
+			<!-- [ breadcrumb ] start -->
+			<div class="page-header">
+				<div class="page-block">
+					<div class="row align-items-center">
+						<div class="col-md-12">
+							<div class="page-header-title">
+								<h5 class="m-b-10">New Case</h5>
+							</div>
+							<ul class="breadcrumb">
+								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+								<li class="breadcrumb-item"><a href="{{ url_for('home_blueprint.newcase') }}">Investigation</a></li>
+								<li class="breadcrumb-item"><a href="{{ url_for('home_blueprint.newcase') }}">New Case</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- [ breadcrumb ] end -->
+			<!-- [ Main Content ] start -->
+			<form role="form" method="post" action="">
+				{{ form.hidden_tag() }}
+				<div class="row">
+					<!-- [ New Case ] start -->
+					{% if msg %}
+						<div class="col-md-8">
+							<div class="alert alert-danger" role="alert">
+								{{ msg | safe }}
+							</div>
+						</div>
+					{% endif %}
+					<div class="col-md-8">
+						<div class="card">
+							<div class="card-header">
+								<h5>Open new case</h5>
+							</div>
+							<div class="card-body">
+								<div class="bt-wizard" id="progresswizard">
+									<ul class="nav nav-pills nav-fill mb-3">
+										<li class="nav-item"><a href="#progress-t-tab1" class="nav-link active" data-toggle="tab">General</a></li>
+										<li class="nav-item"><a href="#progress-t-tab2" class="nav-link" data-toggle="tab">Details</a></li>
+										<li class="nav-item"><a href="#progress-t-tab3" class="nav-link" data-toggle="tab">Final</a></li>
+									</ul>
+									<div id="bar" class="bt-wizard progress mb-3" style="height:6px">
+										<div class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 33.3333%;"></div>
+									</div>
+									<div class="tab-content">
+										<div class="tab-pane show active" id="progress-t-tab1">
+											<div class="form-group row">
+												<label for="case_name" class="col-sm-3 col-form-label">Case Name <span class="text-danger">*</span></label>
+												<div class="col-sm-9">
+													{{ form.case_name(placeholder="Case name", class="form-control") }}
+												</div>
+											</div>
+											<div class="form-group row">
+												<label for="assigned_to" class="col-sm-3 col-form-label">Assigned to <span class="text-danger">*</span></label>
+												<div class="col-sm-9">
+													{{ form.assigned_to(placeholder="Analyst Name", class="form-control") }}
+												</div>
+											</div>
+											<div class="form-group row">
+												<label for="ticket_id" class="col-sm-3 col-form-label">Ticket ID</label>
+												<div class="col-sm-9">
+													{{ form.ticket_id(placeholder="Optional", class="form-control") }}
+												</div>
+											</div>
+										</div>
+										<div class="tab-pane" id="progress-t-tab2">
+											<div class="form-group row">
+												<label for="case_priority" class="col-sm-3 col-form-label">Case Priority <span class="text-danger">*</span></label>
+												<div class="col-sm-9">
+													{{ form.case_priority(class="form-control") }}
+												</div>
+											</div>
+											<div class="form-group row">
+												<label for="description" class="col-sm-3 col-form-label">Description <span class="text-danger">*</span></label>
+												<div class="col-sm-9">
+													{{ form.description(class="form-control", rows="3", spellcheck="false") }}
+												</div>
+											</div>
+										</div>
+										<div class="tab-pane" id="progress-t-tab3">
+											<div class="text-center mt-2">
+												<i class="feather icon-plus-square display-4 text-success"></i>
+												<h5 class="mt-2">One more click! . .</h5>
+												<p>Where you can submit new malware files, hashes, or URLs</p>
+												{{ form.submit(class="btn btn-success") }}
+											</div>
+										</div>
+										<div class="row justify-content-between btn-page">
+											<div class="col-sm-6">
+												<a href="javascript:;" class="btn btn-primary button-previous disabled">Previous</a>
+											</div>
+											<div class="col-sm-6 text-md-right">
+												<a href="javascript:;" class="btn btn-primary button-next">Next</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-3 col-md-6 mb-4">
+						<h5>Anti-Malware Engines</h5>
+						<hr>
+						<div class="form-group mb-2">
+							<div class="switch switch-primary d-inline m-r-10">
+								{{ form.virustotal(class="form-control",checked="") }}
+								<label for="virustotal" class="cr"></label>
+							</div>
+							<label>VirusTotal</label>
+						</div>
+						<div class="form-group mb-2">
+							<div class="switch switch-primary d-inline m-r-10">
+								{{ form.anyrun(class="form-control") }}
+								<label for="anyrun" class="cr"></label>
+							</div>
+							<label>AnyRun</label>
+						</div>
+						<div class="form-group mb-2">
+							<div class="switch switch-primary d-inline m-r-10">
+								{{ form.hybridanalysis(class="form-control") }}
+								<label for="hybridanalysis" class="cr"></label>
+							</div>
+							<label>Hybrid Analysis</label>
+						</div>
+						<div class="form-group mb-2">
+							<div class="switch switch-primary d-inline m-r-10">
+								{{ form.malwarebazaar(class="form-control") }}
+								<label for="malwarebazaar" class="cr"></label>
+							</div>
+							<label>Malware Bazaar</label>
+						</div>
+						<div class="form-group mb-2">
+							<div class="switch switch-primary d-inline m-r-10">
+								{{ form.alienvault_otx(class="form-control") }}
+								<label for="alienvault_otx" class="cr"></label>
+							</div>
+							<label>AlienVault OTX</label>
+						</div>
+						<div class="form-group mb-2">
+							<div class="switch switch-primary d-inline m-r-10">
+								{{ form.urlscan(class="form-control") }}
+								<label for="urlscan" class="cr"></label>
+							</div>
+							<label>URLHaus & URLScan</label>
+						</div>
+					</div>
+					<!-- [ New Case ] end -->
+				</div>
+			</form>
+			<!-- [ Main Content ] end -->
+
+		</div>
+	</div>
+	<!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script src="/static/assets/js/plugins/jquery.bootstrap.wizard.min.js"></script>
+<script>
+	$(document).ready(function() {
+		$('#besicwizard').bootstrapWizard({
+			withVisible: false,
+			'nextSelector': '.button-next',
+			'previousSelector': '.button-previous',
+			'firstSelector': '.button-first',
+			'lastSelector': '.button-last'
+		});
+		$('#btnwizard').bootstrapWizard({
+			withVisible: false,
+			'nextSelector': '.button-next',
+			'previousSelector': '.button-previous',
+			'firstSelector': '.button-first',
+			'lastSelector': '.button-last'
+		});
+		$('#progresswizard').bootstrapWizard({
+			withVisible: false,
+			'nextSelector': '.button-next',
+			'previousSelector': '.button-previous',
+			'firstSelector': '.button-first',
+			'lastSelector': '.button-last',
+			onTabShow: function(tab, navigation, index) {
+				var $total = navigation.find('li').length;
+				var $current = index + 1;
+				var $percent = ($current / $total) * 100;
+				$('#progresswizard .progress-bar').css({
+					width: $percent + '%'
+				});
+			}
+		});
+		$('#validationwizard').bootstrapWizard({
+			withVisible: false,
+			'nextSelector': '.button-next',
+			'previousSelector': '.button-previous',
+			'firstSelector': '.button-first',
+			'lastSelector': '.button-last',
+			onNext: function(tab, navigation, index) {
+				if (index == 1) {
+					if (!$('#validation-t-name').val()) {
+						$('#validation-t-name').focus();
+						$('.form-1').addClass('was-validated');
+						return false;
+					}
+					if (!$('#validation-t-email').val()) {
+						$('#validation-t-email').focus();
+						$('.form-1').addClass('was-validated');
+						return false;
+					}
+					if (!$('#validation-t-pwd').val()) {
+						$('#validation-t-pwd').focus();
+						$('.form-1').addClass('was-validated');
+						return false;
+					}
+				}
+				if (index == 2) {
+					if (!$('#validation-t-address').val()) {
+						$('#validation-t-address').focus();
+						$('.form-2').addClass('was-validated');
+						return false;
+					}
+				}
+			}
+		});
+		$('#tabswizard').bootstrapWizard({
+			'nextSelector': '.button-next',
+			'previousSelector': '.button-previous',
+		});
+		$('#verticalwizard').bootstrapWizard({
+			'nextSelector': '.button-next',
+			'previousSelector': '.button-previous',
+		});
+	});
+</script>
+{% endblock javascripts %}
